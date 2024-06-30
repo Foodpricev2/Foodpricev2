@@ -238,11 +238,11 @@ Modulo_1 <- function(Month, Year, City) {
   # Crear una variable para identificar cada módulo
   Ocupados$ocu = 1
   Datos_del_hogar_y_la_vivienda$DHV = 1
-  # No_ocupados$no_ocu = 1
   Otros_ingresos_e_impuestos$OI = 1
   Caracteristicas_generales$CG = 1
   Fuerza_trabajo$L = 1
   Otras_formas_de_trabajo$OFT = 1
+
 print("no 1")
   # Omisión de variables
 
@@ -270,12 +270,12 @@ print("no 1")
   OCUP_Noocup_OTING_FT_OTF_CARGEN <- merge(OCUP_Noocup_OTING_FT_OTF,Car_gen, by = c("DIRECTORIO", "SECUENCIA_P","ORDEN"), all = TRUE)
 
   personas <-merge(OCUP_Noocup_OTING_FT_OTF_CARGEN,Datos_vivi, by = c("DIRECTORIO", "SECUENCIA_P"))
-
+View(personas)
   print("no 3")
 
   # Convertir las variables a minúsculas
   colnames(personas) <- tolower(colnames(personas))
-
+  print(colnames(personas))
   # Quitar AREA == 88 y AREA == NA
   personas <- personas %>% filter(dpto <= 80)
 
@@ -337,6 +337,10 @@ print("no 1")
   df_total$cg[is.na(df_total$cg)] = 0
   df_total$l[is.na(df_total$l)] = 0
   df_total$oft[is.na(df_total$oft)] = 0
+
+
+
+
   print("no 6")
   #---------------------------------------------#
   #---------------------------------------------#
