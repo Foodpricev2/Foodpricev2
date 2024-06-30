@@ -5,9 +5,9 @@
 
 \usage{
 IncomeCol(
-  Mes,
-  Año,
-  Ciudad
+  Month,
+  Year,
+  City
 )
 }
 
