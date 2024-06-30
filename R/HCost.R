@@ -1,5 +1,11 @@
 HCost <- function(Month = NULL, Year = NULL, City = NULL, Household, Data = NULL, ERR = NULL, EER_LL = NULL, UL = NULL, Serv = NULL, Diverse = NULL) {
 
+  # Carga de librerías
+  Librerias_base <- c("here", "readxl", "tidyverse", "knitr", "moments", "xgboost", "maditr",
+                      "mice", "VIM", "dplyr", "finalfit", "plyr", "hdd", "zip", "httr",
+                      "caret", "nnet", "quantreg", "gridExtra", "ggpubr", "cowplot")
+  if (!require("pacman")) install.packages("pacman")
+  pacman::p_load(char = Librerias_base, character.only = TRUE)
   #-------------------------------------------------#
   #  Validación de parámetros de la función         #
   #-------------------------------------------------#
@@ -64,7 +70,8 @@ HCost <- function(Month = NULL, Year = NULL, City = NULL, Household, Data = NULL
     validar_parametros(City, "character")
 
     cat("Se utilizará la función DataCol del paquete Foodprice para estimaciones.\n")
-    Data_mes_año <- Foodprice::DataCol(Month = Month, Year = Year, City = City)
+    suppressMessages(suppressWarnings(invisible(Data_mes_año <- Foodprice::DataCol(Month = Month, Year = Year, City = City))))
+
   } else {
     Data_mes_año <- Data
   }
@@ -72,7 +79,9 @@ HCost <- function(Month = NULL, Year = NULL, City = NULL, Household, Data = NULL
   # Ejecutar modelo CoCA si ERR no es NULL
   if (!is.null(ERR)) {
     cat("Ejecutando modelo CoCA.\n")
-    modelo_1 <- Foodprice::CoCA(data = Data_mes_año, EER = ERR)$cost
+
+suppressMessages(suppressWarnings(invisible(modelo_1 <- Foodprice::CoCA(data = Data_mes_año, EER = ERR)$cost)))
+
     model_dieta_1 <- merge(Household, modelo_1[c("Demo_Group", "Sex", "cost_day")],
                            by = c("Demo_Group", "Sex"),
                            all.x = TRUE, all.y = FALSE)
@@ -88,7 +97,9 @@ HCost <- function(Month = NULL, Year = NULL, City = NULL, Household, Data = NULL
   # Ejecutar modelo CoNA si EER_LL y UL no son NULL
   if (!is.null(EER_LL) && !is.null(UL)) {
     cat("Ejecutando modelo CoNA.\n")
-    modelo_2 <- Foodprice::CoNA(data = Data_mes_año, EER_LL = EER_LL, UL = UL)$cost
+    suppressMessages(suppressWarnings(invisible(modelo_2 <- Foodprice::CoNA(data = Data_mes_año, EER_LL = EER_LL, UL = UL)$cost)))
+
+
     model_dieta_2 <- merge(Household, modelo_2[c("Demo_Group", "Sex", "cost_day")],
                            by = c("Demo_Group", "Sex"),
                            all.x = TRUE, all.y = FALSE)
@@ -104,7 +115,8 @@ HCost <- function(Month = NULL, Year = NULL, City = NULL, Household, Data = NULL
   # Ejecutar modelo CoRD si Serv y Diverse no son NULL
   if (!is.null(Serv) && !is.null(Diverse)) {
     cat("Ejecutando modelo CoRD.\n")
-    modelo_3 <- Foodprice::CoRD(data = Data_mes_año, diverse = Diverse, serv = Serv)$cost
+
+     suppressMessages(suppressWarnings(invisible(modelo_3 <- Foodprice::CoRD(data = Data_mes_año, diverse = Diverse, serv = Serv)$cost)))
 
     # Aplicar mapeo de grupos demográficos si Data es NULL
     if (is.null(Data)) {
