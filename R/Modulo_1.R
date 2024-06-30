@@ -301,7 +301,9 @@ print("no 1")
   df_total$dominio = as.numeric(df_total$area)
   print("no 4")
   df_total$dominio[df_total$dominio == "63"] = "ARMENIA"
+  print("no 4.1")
   df_total$dominio[df_total$dominio == "8"] = "BARRANQUILLA"
+  print("no 4.2")
   df_total$dominio[df_total$dominio == "11"] = "BOGOTA"
   df_total$dominio[df_total$dominio == "68"] = "BUCARAMANGA"
   df_total$dominio[df_total$dominio == "76"] = "CALI"
@@ -309,6 +311,7 @@ print("no 1")
   df_total$dominio[df_total$dominio == "54"] = "CUCUTA"
   df_total$dominio[df_total$dominio == "18"] = "FLORENCIA"
   df_total$dominio[df_total$dominio == "73"] = "IBAGUE"
+  print("no 4.3")
   df_total$dominio[df_total$dominio == "17"] = "MANIZALES"
   df_total$dominio[df_total$dominio == "5"] = "MEDELLIN"
   df_total$dominio[df_total$dominio == "23"] = "MONTERIA"
@@ -324,7 +327,7 @@ print("no 1")
   df_total$dominio[df_total$dominio == "20"] = "VALLEDUPAR"
   df_total$dominio[df_total$dominio == "50"] = "VILLAVICENCIO"
   df_total$dominio[is.na(df_total$dominio)] = "RESTO URBANO"
-
+  print("no 5")
   # Ajustar NA en las variables binarias creadas para cada módulo
   # (Por ejemplo, en el módulo de ocupados: si ocu == NA, entonces ocu == 0)
   df_total$ocu[is.na(df_total$ocu)] = 0
@@ -334,7 +337,7 @@ print("no 1")
   df_total$cg[is.na(df_total$cg)] = 0
   df_total$l[is.na(df_total$l)] = 0
   df_total$oft[is.na(df_total$oft)] = 0
-
+  print("no 6")
   #---------------------------------------------#
   #---------------------------------------------#
   # INICIO DEL MÓDULO 2: Algoritmo ingreso GEIH # ------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -413,11 +416,11 @@ print("no 1")
                  "p5090",
                  "p5130"
   )
-
+  print("no 7")
   # Seleccionar variables en la base de datos
   df_total <- df_total %>%  dplyr::select(variables)
 
-  print("no 5")
+  print("no 8")
   #------------------------------------------------------#
   #  Creación de variables para preceptores de ingresos  #
   #------------------------------------------------------#
