@@ -28,10 +28,10 @@ Función diseñada para estimar métricas basadas en tres tipos de dietas de cos
 # cargando datos de Foodprice
 library(Foodprice)
 
-datos_h=HCost <- Foodpricev2::HCost(Year = 2022, City = "Cali", Month=6,Household=Household, ERR = EER, EER_LL = EER_LL, UL = UL, Serv = serv,Diverse=diverse)}
-head(datos_h)
+datos_h=HCost <- Foodpricev2::HCost(Year = 2022, City = "Cali", Month=6,Household=Household, ERR = EER, EER_LL = EER_LL, UL = UL, Serv = serv,Diverse=diverse)
 
 }
+
 
 \arguments{
   \item{Month:}{Valor numérico que indica el mes para el cual se realizará la estimación. Debe ser un valor entre 1 y 12.}
