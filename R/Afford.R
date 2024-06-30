@@ -24,23 +24,33 @@ Afford <- function(Hexpense, Model_CoCA = NULL, Model_CoNA = NULL, Model_CoRD = 
       stop("Hexpense le faltan las siguientes columnas: ", paste(columnas_faltantes, collapse = ", "))
     }
 
-    # Validar modelos si no son NULL
+    # Función para validar si es un data frame con la columna 'per_capita'
+    validar_df_per_capita <- function(model_name, model) {
+      if (is.numeric(model)) {
+        return(TRUE)  # Si es numérico, no hay más validación necesaria
+      } else if (is.data.frame(model)) {
+        if (!"per_capita" %in% names(model)) {
+          stop(paste(model_name, "debe ser un data.frame con la columna 'per_capita'"))
+        }
+      } else {
+        stop(paste(model_name, "debe ser numérico o un data.frame"))
+      }
+      return(TRUE)
+    }
+
+    # Validar Model_CoCA si no es NULL
     if (!is.null(Model_CoCA)) {
-      if (!is.data.frame(Model_CoCA) || !all(c("per_capita_year", "per_capita_month") %in% names(Model_CoCA))) {
-        stop("Model_CoCA debe ser un data.frame con las columnas 'per_capita_year' y 'per_capita_month'")
-      }
+      validar_df_per_capita("Model_CoCA", Model_CoCA)
     }
 
+    # Validar Model_CoNA si no es NULL
     if (!is.null(Model_CoNA)) {
-      if (!is.data.frame(Model_CoNA) || !all(c("per_capita_year", "per_capita_month") %in% names(Model_CoNA))) {
-        stop("Model_CoNA debe ser un data.frame con las columnas 'per_capita_year' y 'per_capita_month'")
-      }
+      validar_df_per_capita("Model_CoNA", Model_CoNA)
     }
 
+    # Validar Model_CoRD si no es NULL
     if (!is.null(Model_CoRD)) {
-      if (!is.data.frame(Model_CoRD) || !all(c("per_capita_year", "per_capita_month") %in% names(Model_CoRD))) {
-        stop("Model_CoRD debe ser un data.frame con las columnas 'per_capita_year' y 'per_capita_month'")
-      }
+      validar_df_per_capita("Model_CoRD", Model_CoRD)
     }
 
     # Asegurarse de que al menos uno de los modelos no sea NULL
@@ -53,7 +63,14 @@ Afford <- function(Hexpense, Model_CoCA = NULL, Model_CoNA = NULL, Model_CoRD = 
   validar_parametros(Hexpense, Model_CoCA, Model_CoNA, Model_CoRD)
 
   calculate_outcome <- function(dataset, model, deciles_grupos, model_name) {
-    z <- as.numeric(levels(as.factor(model$per_capita_year)))
+    # Convertir model$per_capita a un vector numérico
+    if (is.data.frame(model)) {
+      z <- as.numeric(levels(as.factor(model$per_capita*365)))
+
+    } else {
+      z <- as.numeric(model) * 365
+    }
+
     outcome_list <- list()
 
     for (j in 1:length(deciles_grupos)) {
@@ -164,9 +181,20 @@ Afford <- function(Hexpense, Model_CoCA = NULL, Model_CoNA = NULL, Model_CoRD = 
 
   names(mean_income_deciles) <- new_names_mean_income
 
-  umbral_1 <- if (!is.null(Model_CoCA)) as.numeric(levels(as.factor(Model_CoCA$per_capita_month))) else NA
-  umbral_2 <- if (!is.null(Model_CoNA)) as.numeric(levels(as.factor(Model_CoNA$per_capita_month))) else NA
-  umbral_3 <- if (!is.null(Model_CoRD)) as.numeric(levels(as.factor(Model_CoRD$per_capita_month))) else NA
+  función_detc <- function(model) {
+    if (is.data.frame(model)) {
+      z <- as.numeric(model$per_capita) * 30
+    } else {
+      z <- as.numeric(model) * 30
+    }
+    return(z)
+  }
+
+  umbral_1 <- if (!is.null(Model_CoCA)) as.numeric(levels(as.factor(función_detc(Model_CoCA)))) else NA
+  umbral_2 <- if (!is.null(Model_CoNA)) as.numeric(levels(as.factor(función_detc(Model_CoNA)))) else NA
+  umbral_3 <- if (!is.null(Model_CoRD)) as.numeric(levels(as.factor(función_detc(Model_CoRD)))) else NA
+
+
 
   mean_income_food <- mean_income_deciles[c("deciles", "average_food_exp_per_capita")]
 
