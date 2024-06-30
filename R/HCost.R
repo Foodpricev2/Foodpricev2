@@ -204,8 +204,6 @@ HCost <- function(Month = NULL, Year = NULL, City = NULL, Household, Data = NULL
 }
 
 
-y=HCost <- HCost( Year = 2022, City = "Cali", Month=6,Household=m, ERR = EER, EER_LL = EER_LL, UL = UL, Serv = serv,Diverse=diverse)
-
 
 
 
