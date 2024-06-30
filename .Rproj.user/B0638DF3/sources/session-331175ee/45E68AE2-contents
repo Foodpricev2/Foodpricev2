@@ -243,7 +243,7 @@ Modulo_1 <- function(Month, Year, City) {
   Caracteristicas_generales$CG = 1
   Fuerza_trabajo$L = 1
   Otras_formas_de_trabajo$OFT = 1
-
+print("no 1")
   # Omisión de variables
 
   ocup <- Ocupados %>% select(-c(PERIODO, HOGAR, CLASE, AREA, MES, DPTO, FEX_C18, PER, REGIS, FT))
@@ -261,7 +261,7 @@ Modulo_1 <- function(Month, Year, City) {
   Car_gen <- Caracteristicas_generales  %>% select(-c(PERIODO, HOGAR, REGIS))
 
 
-
+  print("no 2")
   # merge completo
   OCUP_Noocup <- merge(ocup,Noocup, by = c("DIRECTORIO", "SECUENCIA_P","ORDEN"), all = TRUE)
   OCUP_Noocup_OTING<- merge(OCUP_Noocup,Ot_ing, by = c("DIRECTORIO", "SECUENCIA_P","ORDEN"), all = TRUE)
@@ -271,7 +271,7 @@ Modulo_1 <- function(Month, Year, City) {
 
   personas <-merge(OCUP_Noocup_OTING_FT_OTF_CARGEN,Datos_vivi, by = c("DIRECTORIO", "SECUENCIA_P"))
 
-
+  print("no 3")
 
   # Convertir las variables a minúsculas
   colnames(personas) <- tolower(colnames(personas))
@@ -299,7 +299,7 @@ Modulo_1 <- function(Month, Year, City) {
   # (3) Área rural
 
   df_total$dominio = as.numeric(df_total$area)
-
+  print("no 4")
   df_total$dominio[df_total$dominio == "63"] = "ARMENIA"
   df_total$dominio[df_total$dominio == "8"] = "BARRANQUILLA"
   df_total$dominio[df_total$dominio == "11"] = "BOGOTA"
@@ -417,7 +417,7 @@ Modulo_1 <- function(Month, Year, City) {
   # Seleccionar variables en la base de datos
   df_total <- df_total %>%  dplyr::select(variables)
 
-
+  print("no 5")
   #------------------------------------------------------#
   #  Creación de variables para preceptores de ingresos  #
   #------------------------------------------------------#

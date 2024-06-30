@@ -1,1 +1,3 @@
 devtools::install_github("Foodpricev2/Foodpricev2");library(Foodpricev2)
+
+x=Modulo_1(6,2022,"Cali")
