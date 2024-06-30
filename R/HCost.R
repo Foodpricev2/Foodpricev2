@@ -9,6 +9,19 @@ HCost <- function(Month = NULL, Year = NULL, City = NULL, Household, Data = NULL
   #-------------------------------------------------#
   #  Validación de parámetros de la función         #
   #-------------------------------------------------#
+  suppress_all <- function(expr) {
+    sink(tempfile()) # Redirige la salida a un archivo temporal
+    on.exit(sink())  # Asegura que la salida se restablezca al salir de la función
+
+    invisible(capture.output({
+      suppressMessages(suppressWarnings({
+        result <- expr
+      }))
+    }))
+
+    return(result)
+  }
+
 
   # Validar tipo y estructura del dataframe Household
   validar_household_type <- function(household_type) {
@@ -69,8 +82,8 @@ HCost <- function(Month = NULL, Year = NULL, City = NULL, Household, Data = NULL
     validar_parametros(Year, "numeric", c(2022, 2023))
     validar_parametros(City, "character")
 
-    cat("Se utilizará la función DataCol del paquete Foodprice para estimaciones.\n")
-    suppressMessages(suppressWarnings(invisible(Data_mes_año <- Foodprice::DataCol(Month = Month, Year = Year, City = City))))
+    cat("\n Se utilizará la función DataCol del paquete Foodprice para estimaciones.\n")
+    Data_mes_año <- suppress_all(Foodprice::DataCol(Month = Month, Year = Year, City = City))
 
   } else {
     Data_mes_año <- Data
@@ -78,9 +91,8 @@ HCost <- function(Month = NULL, Year = NULL, City = NULL, Household, Data = NULL
 
   # Ejecutar modelo CoCA si ERR no es NULL
   if (!is.null(ERR)) {
-    cat("Ejecutando modelo CoCA.\n")
-
-suppressMessages(suppressWarnings(invisible(modelo_1 <- Foodprice::CoCA(data = Data_mes_año, EER = ERR)$cost)))
+    cat(" Ejecutando modelo CoCA. \n")
+    modelo_1 <- suppress_all(Foodprice::CoCA(data = Data_mes_año, EER = ERR)$cost)
 
     model_dieta_1 <- merge(Household, modelo_1[c("Demo_Group", "Sex", "cost_day")],
                            by = c("Demo_Group", "Sex"),
@@ -96,9 +108,11 @@ suppressMessages(suppressWarnings(invisible(modelo_1 <- Foodprice::CoCA(data = D
 
   # Ejecutar modelo CoNA si EER_LL y UL no son NULL
   if (!is.null(EER_LL) && !is.null(UL)) {
-    cat("Ejecutando modelo CoNA.\n")
-    suppressMessages(suppressWarnings(invisible(modelo_2 <- Foodprice::CoNA(data = Data_mes_año, EER_LL = EER_LL, UL = UL)$cost)))
 
+    cat(" Ejecutando modelo CoNA.\n")
+
+    # Uso de la función
+    modelo_2 <- suppress_all(Foodprice::CoNA(data = Data_mes_año, EER_LL = EER_LL, UL = UL)$cost)
 
     model_dieta_2 <- merge(Household, modelo_2[c("Demo_Group", "Sex", "cost_day")],
                            by = c("Demo_Group", "Sex"),
@@ -114,9 +128,11 @@ suppressMessages(suppressWarnings(invisible(modelo_1 <- Foodprice::CoCA(data = D
 
   # Ejecutar modelo CoRD si Serv y Diverse no son NULL
   if (!is.null(Serv) && !is.null(Diverse)) {
-    cat("Ejecutando modelo CoRD.\n")
 
-     suppressMessages(suppressWarnings(invisible(modelo_3 <- Foodprice::CoRD(data = Data_mes_año, diverse = Diverse, serv = Serv)$cost)))
+    cat(" Ejecutando modelo CoRD.\n")
+
+
+    modelo_3 <- suppress_all(Foodprice::CoRD(data = Data_mes_año, diverse = Diverse, serv = Serv)$cost)
 
     # Aplicar mapeo de grupos demográficos si Data es NULL
     if (is.null(Data)) {
@@ -186,6 +202,9 @@ suppressMessages(suppressWarnings(invisible(modelo_1 <- Foodprice::CoCA(data = D
 
   return(resultado)
 }
+
+
+y=HCost <- HCost( Year = 2022, City = "Cali", Month=6,Household=m, ERR = EER, EER_LL = EER_LL, UL = UL, Serv = serv,Diverse=diverse)
 
 
 
