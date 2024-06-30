@@ -6,6 +6,17 @@ HCost <- function(Month = NULL, Year = NULL, City = NULL, Household, Data = NULL
                       "caret", "nnet", "quantreg", "gridExtra", "ggpubr", "cowplot")
   if (!require("pacman")) install.packages("pacman")
   pacman::p_load(char = Librerias_base, character.only = TRUE)
+
+
+
+  # Instalación de la librería Foodprice si no está disponible
+  if (!requireNamespace("Foodprice", quietly = TRUE)) {
+    devtools::install_github("Foodprice/Foodprice")
+  }
+
+  # Cargar la librería Foodprice
+  library(Foodprice)
+
   #-------------------------------------------------#
   #  Validación de parámetros de la función         #
   #-------------------------------------------------#
