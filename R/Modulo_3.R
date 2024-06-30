@@ -1,22 +1,22 @@
 
-Modulo_3 <- function(Data_income_household,Model_CoCA,Model_CoNA,Model_CoRD) {
+Modulo_3 <- function(Hexpense,Model_CoCA,Model_CoNA,Model_CoRD) {
 
 
   #-------------------------------------------------#
   #  Validación de parámetros de la función 3      #
   #-------------------------------------------------#
-  validar_parametros <- function(Data_income_household, Model_CoCA, Model_CoNA, Model_CoRD) {
+  validar_parametros <- function(Hexpense, Model_CoCA, Model_CoNA, Model_CoRD) {
 
-    # Validar Data_income_household
-    if (!is.data.frame(Data_income_household)) {
-      stop("Data_income_household debe ser un data.frame")
+    # Validar Hexpense
+    if (!is.data.frame(Hexpense)) {
+      stop("Hexpense debe ser un data.frame")
     }
 
-    columnas_esperadas <- c("deciles", "income", "Total_persons_household", "per_capita_income", "food_income_per_capita")
-    columnas_faltantes <- setdiff(columnas_esperadas, names(Data_income_household))
+    columnas_esperadas <- c("deciles", "income", "ung", "per_capita_income", "food_exp_per_capita")
+    columnas_faltantes <- setdiff(columnas_esperadas, names(Hexpense))
 
     if (length(columnas_faltantes) > 0) {
-      stop("Data_income_household le faltan las siguientes columnas: ", paste(columnas_faltantes, collapse = ", "))
+      stop("Hexpense le faltan las siguientes columnas: ", paste(columnas_faltantes, collapse = ", "))
     }
 
     # Validar Model_CoCA
@@ -58,17 +58,17 @@ length(outcome_1_list) = 10
 z <- as.numeric(levels(as.factor(Model_CoCA$per_capita_year )))
 
 outcome_1_list <- lapply(deciles_grupos, function(decile) {
-  # Filtrar Data_income_household una vez para el decil actual
-  df_y <- Data_income_household %>% filter(deciles %in% decile)
+  # Filtrar Hexpense una vez para el decil actual
+  df_y <- Hexpense %>% filter(deciles %in% decile)
 
   # Crear dummy vectorizado
-  df_y$dummy <- ifelse(df_y$food_income_per_capita_year < z, 1, 0)
+  df_y$dummy <- ifelse(df_y$food_exp_per_capita_year < z, 1, 0)
 
   # Filtrar df_y para obtener solo filas donde dummy es 1
   df_z <- df_y %>% filter(dummy == 1)
 
   # Calcular brecha relativa y su cuadrado
-  df_z$brecha_rel <- (z - df_z$food_income_per_capita_year) / z
+  df_z$brecha_rel <- (z - df_z$food_exp_per_capita_year) / z
   df_z$brecha_rel_sqr <- df_z$brecha_rel^2
 
   # Calcular los índices
@@ -94,11 +94,11 @@ calculate_outcome <- function(dataset, model, deciles_grupos) {
     df_y <- dataset %>% filter(deciles %in% deciles_grupos[j])
 
     # Crear dummy vectorizado
-    df_y$dummy <- ifelse(df_y$food_income_per_capita_year < z, 1, 0)
+    df_y$dummy <- ifelse(df_y$food_exp_per_capita_year < z, 1, 0)
 
     df_z <- df_y %>% filter(dummy == 1)
 
-    df_z$brecha_rel <- (z - df_z$food_income_per_capita_year) / z
+    df_z$brecha_rel <- (z - df_z$food_exp_per_capita_year) / z
     df_z$brecha_rel_sqr <- df_z$brecha_rel^2
 
     N <- nrow(df_y)
@@ -116,9 +116,9 @@ calculate_outcome <- function(dataset, model, deciles_grupos) {
 }
 
 # Calcular resultados para los tres escenarios
-outcome_1_list <- calculate_outcome(Data_income_household, Model_CoCA, deciles_grupos)
-outcome_2_list <- calculate_outcome(Data_income_household, Model_CoNA, deciles_grupos)
-outcome_3_list <- calculate_outcome(Data_income_household, Model_CoRD, deciles_grupos)
+outcome_1_list <- calculate_outcome(Hexpense, Model_CoCA, deciles_grupos)
+outcome_2_list <- calculate_outcome(Hexpense, Model_CoNA, deciles_grupos)
+outcome_3_list <- calculate_outcome(Hexpense, Model_CoRD, deciles_grupos)
 
 # Combinar resultados para cada escenario
 poverty_1_outcome <- do.call(rbind, outcome_1_list)
@@ -175,13 +175,13 @@ mean_income$food_per_capita_prom = NA
 # NOTA: LOS PROMEDIOS FUERON CALCULADOS CON PREVIA EXPANSIÓN
 for (k in 1:length(deciles_grupos)) {
   df = data.frame()
-  df = Data_income_household  %>% filter(deciles  %in% deciles_grupos[k])
+  df = Hexpense  %>% filter(deciles  %in% deciles_grupos[k])
   y_1 = which(mean_income$deciles_grupos == deciles_grupos[k])
 
 
   mean_income$ingreso_prom[y_1] = mean(df$income)
 
-  mean_income$size_prom[y_1] = mean(df$Total_persons_household)
+  mean_income$size_prom[y_1] = mean(df$ung)
 
   mean_income$n[y_1] = nrow(df)
 
@@ -195,9 +195,9 @@ for (k in 1:length(deciles_grupos)) {
 
   mean_income$food[y_1] = mean(df$food_income)
 
-  mean_income$min_food_pc[y_1] = min(df$food_income_per_capita)
-  mean_income$max_food_pc[y_1] = max(df$food_income_per_capita)
-  mean_income$food_per_capita_prom[y_1] = mean(df$food_income_per_capita)
+  mean_income$min_food_pc[y_1] = min(df$food_exp_per_capita)
+  mean_income$max_food_pc[y_1] = max(df$food_exp_per_capita)
+  mean_income$food_per_capita_prom[y_1] = mean(df$food_exp_per_capita)
 
 }
 
@@ -216,7 +216,7 @@ new_names_mean_income <- c(
   "food_income",
   "min_food_per_capita",
   "max_food_per_capita",
-  "average_food_income_per_capita"
+  "average_food_exp_per_capita"
 )
 
 # Cambiar los nombres de las columnas
@@ -226,15 +226,15 @@ umbral_1 =as.numeric(levels(as.factor(Model_CoCA$per_capita_month)))
 umbral_2 =as.numeric(levels(as.factor(Model_CoNA$per_capita_month)))
 umbral_3 =as.numeric(levels(as.factor(Model_CoRD$per_capita_month)))
 
-mean_income_food = mean_income_deciles[c("deciles", "average_food_income_per_capita")]
+mean_income_food = mean_income_deciles[c("deciles", "average_food_exp_per_capita")]
 
 mean_income_food$umbral_1 = umbral_1
 mean_income_food$umbral_2= umbral_2
 mean_income_food$umbral_3= umbral_3
 
-mean_income_food$ratio_1 = mean_income_food$umbral_1/mean_income_food$average_food_income_per_capita
-mean_income_food$ratio_2 = mean_income_food$umbral_2/mean_income_food$average_food_income_per_capita
-mean_income_food$ratio_3 = mean_income_food$umbral_3/mean_income_food$average_food_income_per_capita
+mean_income_food$ratio_1 = mean_income_food$umbral_1/mean_income_food$average_food_exp_per_capita
+mean_income_food$ratio_2 = mean_income_food$umbral_2/mean_income_food$average_food_exp_per_capita
+mean_income_food$ratio_3 = mean_income_food$umbral_3/mean_income_food$average_food_exp_per_capita
 
 names(mean_income_food)= c("decile_groups", "food_per_capita_avg", "threshold_1", "threshold_2", "threshold_3", "ratio_1", "ratio_2", "ratio_3")
 

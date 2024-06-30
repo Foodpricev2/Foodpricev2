@@ -2,7 +2,7 @@
 #           Definición de la función             #
 #------------------------------------------------#
 
-Modulo_1 <- function(Month, Year, City) {
+IncomeCol  <- function(Month, Year, City) {
 
 
   # Función para validar parámetros
@@ -275,7 +275,7 @@ Modulo_1 <- function(Month, Year, City) {
 
   # Convertir las variables a minúsculas
   colnames(personas) <- tolower(colnames(personas))
-  print(colnames(personas))
+
   # Quitar AREA == 88 y AREA == NA
   personas <- personas %>% filter(dpto <= 80)
 
@@ -415,11 +415,11 @@ Modulo_1 <- function(Month, Year, City) {
                  "p5090",
                  "p5130"
   )
-  print("no 7")
+
   # Seleccionar variables en la base de datos
   df_total <- df_total %>%  dplyr::select(variables)
 
-  print("no 8")
+
   #------------------------------------------------------#
   #  Creación de variables para preceptores de ingresos  #
   #------------------------------------------------------#
@@ -2473,7 +2473,7 @@ Modulo_1 <- function(Month, Year, City) {
   #   FILTRANDO GEIH POR CIDUAD     #
   #---------------------------------#
 
-    df_total <- df_total %>% filter(dominio == ciudad_asignada)
+  df_total <- df_total %>% filter(dominio == ciudad_asignada)
 
   # Ingresos de asalariados
   df_total$INGES_ASAL <- ifelse(df_total$asalariado == 1,
@@ -2731,14 +2731,14 @@ Modulo_1 <- function(Month, Year, City) {
 
   # Selección de las variables de interés
   vivienda_ciudad_1 = vivienda_ciudad[c("DIRECTORIO", "SECUENCIA_ENCUESTA", "SECUENCIA_P",
-                                    "ORDEN", "P1_DEPARTAMENTO", "CLASE", "FEX_C",
-                                    "CANT_HOG_COMPLETOS", "CANT_HOGARES_VIVIENDA")]
+                                        "ORDEN", "P1_DEPARTAMENTO", "CLASE", "FEX_C",
+                                        "CANT_HOG_COMPLETOS", "CANT_HOGARES_VIVIENDA")]
 
   gastos_hogares_ciudad_1 = gastos_hogares_ciudad[c("DIRECTORIO", "SECUENCIA_ENCUESTA", "SECUENCIA_P",
-                                                "ORDEN", "FEX_C", "P3204", "P3204S1", "P3204S2")]
+                                                    "ORDEN", "FEX_C", "P3204", "P3204S1", "P3204S2")]
 
   servicios_ciudad_1 = servicios_ciudad[c("DIRECTORIO", "SECUENCIA_ENCUESTA", "SECUENCIA_P", "ORDEN",
-                                      "I_HOGAR", "I_UGASTO", "PERCAPITA", "I_OU")]
+                                          "I_HOGAR", "I_UGASTO", "PERCAPITA", "I_OU")]
 
   ###############################
   ## Cálculo del ingreso para  ##
@@ -2746,7 +2746,7 @@ Modulo_1 <- function(Month, Year, City) {
   ###############################
   # construir id
   servicios_ciudad_1$id = paste0(servicios_ciudad$DIRECTORIO,
-                               "-",servicios_ciudad$ORDEN)
+                                 "-",servicios_ciudad$ORDEN)
 
   # ingresos hogares
   hogar_ingresos = servicios_ciudad_1[c("id", "I_HOGAR")]
@@ -2759,7 +2759,7 @@ Modulo_1 <- function(Month, Year, City) {
 
   # construir id
   gastos_hogares_ciudad_1$id = paste0(gastos_hogares_ciudad_1$DIRECTORIO,
-                                    "-",gastos_hogares_ciudad_1$SECUENCIA_P)
+                                      "-",gastos_hogares_ciudad_1$SECUENCIA_P)
 
   # reemplazar NA por 0 en las variables de gasto
   gastos_hogares_ciudad_1$P3204S1[is.na(gastos_hogares_ciudad_1$P3204S1)] = 0
@@ -2889,25 +2889,25 @@ Modulo_1 <- function(Month, Year, City) {
   dataset_def_deciles= dataset_def_deciles %>% select(deciles,id_hogar,nug,ingresos,per_capita,share,ingreso_alimentos,ingreso_alimentos_per_capita,per_capita_year)
 
 
-    # cambiando nombres
+  # cambiando nombres
   new_names <- c(
     "deciles",
     "household_id",
-    "Total_persons_household",
+    "ung",
     "income",
     "per_capita_income",
     "share",
-    "food_income",
-    "food_income_per_capita",
-    "food_income_per_capita_year"
+    "food_exp",
+    "food_exp_per_capita",
+    "food_exp_per_capita_year"
   )
-
 
   # Cambiar los nombres de las columnas
   names(dataset_def_deciles) <- new_names
 
   Data_income_household=dataset_def_deciles
- return(Data_income_household)
+  return(Data_income_household)
   cat("     Finalizado ✓ \n")
 }
+
 
