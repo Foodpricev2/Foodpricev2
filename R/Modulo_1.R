@@ -219,7 +219,6 @@ Modulo_1 <- function(Month, Year, City) {
   Fuerza_trabajo <- get(envr_name_mes, envir = data_GEIH)$Fuerza_de_trabajo
   Otras_formas_de_trabajo <- get(envr_name_mes, envir = data_GEIH)$Otras_formas_de_trabajo
 
-  print(Ocupados)
 
 
   cat("     Finalizado ✓ \n")
@@ -241,14 +240,13 @@ Modulo_1 <- function(Month, Year, City) {
 
   # Crear una variable para identificar cada módulo
   Ocupados$ocu = 1
-  print( Ocupados$ocu)
   Datos_del_hogar_y_la_vivienda$DHV = 1
   Otros_ingresos_e_impuestos$OI = 1
   Caracteristicas_generales$CG = 1
   Fuerza_trabajo$L = 1
   Otras_formas_de_trabajo$OFT = 1
 
-print("no 1")
+
   # Omisión de variables
 
   ocup <- Ocupados %>% select(-c(PERIODO, HOGAR, CLASE, AREA, MES, DPTO, FEX_C18, PER, REGIS, FT))
@@ -266,7 +264,6 @@ print("no 1")
   Car_gen <- Caracteristicas_generales  %>% select(-c(PERIODO, HOGAR, REGIS))
 
 
-  print("no 2")
   # merge completo
   OCUP_Noocup <- merge(ocup,Noocup, by = c("DIRECTORIO", "SECUENCIA_P","ORDEN"), all = TRUE)
   OCUP_Noocup_OTING<- merge(OCUP_Noocup,Ot_ing, by = c("DIRECTORIO", "SECUENCIA_P","ORDEN"), all = TRUE)
@@ -275,8 +272,7 @@ print("no 1")
   OCUP_Noocup_OTING_FT_OTF_CARGEN <- merge(OCUP_Noocup_OTING_FT_OTF,Car_gen, by = c("DIRECTORIO", "SECUENCIA_P","ORDEN"), all = TRUE)
 
   personas <-merge(OCUP_Noocup_OTING_FT_OTF_CARGEN,Datos_vivi, by = c("DIRECTORIO", "SECUENCIA_P"))
-View(personas)
-  print("no 3")
+
 
   # Convertir las variables a minúsculas
   colnames(personas) <- tolower(colnames(personas))
@@ -304,11 +300,8 @@ View(personas)
   # (3) Área rural
 
   df_total$dominio = as.numeric(df_total$area)
-  print("no 4")
   df_total$dominio[df_total$dominio == "63"] = "ARMENIA"
-  print("no 4.1")
   df_total$dominio[df_total$dominio == "8"] = "BARRANQUILLA"
-  print("no 4.2")
   df_total$dominio[df_total$dominio == "11"] = "BOGOTA"
   df_total$dominio[df_total$dominio == "68"] = "BUCARAMANGA"
   df_total$dominio[df_total$dominio == "76"] = "CALI"
@@ -316,7 +309,6 @@ View(personas)
   df_total$dominio[df_total$dominio == "54"] = "CUCUTA"
   df_total$dominio[df_total$dominio == "18"] = "FLORENCIA"
   df_total$dominio[df_total$dominio == "73"] = "IBAGUE"
-  print("no 4.3")
   df_total$dominio[df_total$dominio == "17"] = "MANIZALES"
   df_total$dominio[df_total$dominio == "5"] = "MEDELLIN"
   df_total$dominio[df_total$dominio == "23"] = "MONTERIA"
@@ -332,21 +324,20 @@ View(personas)
   df_total$dominio[df_total$dominio == "20"] = "VALLEDUPAR"
   df_total$dominio[df_total$dominio == "50"] = "VILLAVICENCIO"
   df_total$dominio[is.na(df_total$dominio)] = "RESTO URBANO"
-  print("no 5")
+
+
   # Ajustar NA en las variables binarias creadas para cada módulo
   # (Por ejemplo, en el módulo de ocupados: si ocu == NA, entonces ocu == 0)
-  df_total$ocu[is.na(df_total$ocu)] = 0
-  df_total$dhv[is.na(df_total$dhv)] = 0
-  df_total$no_ocu[is.na(df_total$no_ocu)] = 0
-  df_total$oi[is.na(df_total$oi)] = 0
-  df_total$cg[is.na(df_total$cg)] = 0
-  df_total$l[is.na(df_total$l)] = 0
-  df_total$oft[is.na(df_total$oft)] = 0
+  columnas_a_actualizar <- c("ocu", "dhv", "no_ocu", "oi", "cg", "l", "oft")
+
+  # Aplicar reemplazo condicional solo si hay NA
+  df_total[columnas_a_actualizar] <- lapply(df_total[columnas_a_actualizar], function(x) {
+    ifelse(is.na(x), 0, x)
+  })
 
 
 
 
-  print("no 6")
   #---------------------------------------------#
   #---------------------------------------------#
   # INICIO DEL MÓDULO 2: Algoritmo ingreso GEIH # ------------------------------------------------------------------------------------------------------------------------------------------------------
