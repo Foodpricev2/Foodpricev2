@@ -202,6 +202,18 @@ Modulo_1 <- function(Month, Year, City) {
       rm(list = nombre, envir = get(envr_name_mes, envir = data_GEIH))
     }
 
+    # Nombrar datos
+    Ocupados <- get(envr_name_mes, envir = data_GEIH)$Ocupados
+    Datos_del_hogar_y_la_vivienda <- get(envr_name_mes, envir = data_GEIH)$Datos_del_hogar_y_la_vivienda
+    No_ocupados <- get(envr_name_mes, envir = data_GEIH)$No_ocupados
+    Otros_ingresos_e_impuestos <- get(envr_name_mes, envir = data_GEIH)$Otros_ingresos_e_impuestos
+    Caracteristicas_generales <- get(envr_name_mes, envir = data_GEIH)$Características_generales__seguridad_social_en_salud_y_educación
+    Fuerza_trabajo <- get(envr_name_mes, envir = data_GEIH)$Fuerza_de_trabajo
+    Otras_formas_de_trabajo <- get(envr_name_mes, envir = data_GEIH)$Otras_formas_de_trabajo
+
+
+
+    cat("     Finalizado ✓ \n")
 
 
   } else {
@@ -209,19 +221,6 @@ Modulo_1 <- function(Month, Year, City) {
   }
 
 
-
-  # Nombrar datos
-  Ocupados <- get(envr_name_mes, envir = data_GEIH)$Ocupados
-  Datos_del_hogar_y_la_vivienda <- get(envr_name_mes, envir = data_GEIH)$Datos_del_hogar_y_la_vivienda
-  No_ocupados <- get(envr_name_mes, envir = data_GEIH)$No_ocupados
-  Otros_ingresos_e_impuestos <- get(envr_name_mes, envir = data_GEIH)$Otros_ingresos_e_impuestos
-  Caracteristicas_generales <- get(envr_name_mes, envir = data_GEIH)$Características_generales__seguridad_social_en_salud_y_educación
-  Fuerza_trabajo <- get(envr_name_mes, envir = data_GEIH)$Fuerza_de_trabajo
-  Otras_formas_de_trabajo <- get(envr_name_mes, envir = data_GEIH)$Otras_formas_de_trabajo
-
-
-
-  cat("     Finalizado ✓ \n")
   #------------------------------------------------#
   #            FIN DEL MÓDULO 1 ORGINAL            # PENDIENTE: FALTA REVISAR POCAS COSAS.
   #------------------------------------------------#
@@ -245,7 +244,7 @@ Modulo_1 <- function(Month, Year, City) {
   Caracteristicas_generales$CG = 1
   Fuerza_trabajo$L = 1
   Otras_formas_de_trabajo$OFT = 1
-
+  No_ocupados$no_ocu = 1
 
   # Omisión de variables
 
