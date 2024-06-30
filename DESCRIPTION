@@ -1,11 +1,11 @@
 Package: Foodpricev2
 Type: Package
-Title: R package for affordability analysis of minimum cost diets. 
+Title: Paquete en R para el análisis de asequibilidad de dietas de costo mínimo. 
 Version: 1.0.0
 Author: Daniel González, Sergio A. Barona, Juan Camilo Ordoñez
 Maintainer: Juan Camilo Ordoñez  <kmilinm19@gmail.com>
 Depends: R (>= 4.3.2)
-Description: This R package provides tools and functions to analyze the affordability of minimum cost diets, enabling users to assess dietary expenses in relation to household income
+Description: Este paquete de R proporciona herramientas y funciones para analizar la asequibilidad de dietas de costo mínimo, permitiendo a los usuarios evaluar los gastos dietéticos en relación con el ingreso del hogar.
 License: MIT
 Encoding: UTF-8
 LazyData: true
