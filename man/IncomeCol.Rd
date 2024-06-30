@@ -19,7 +19,7 @@ Función diseñada para calcular los ingresos actuales de individuos basándose 
 \examples{
 # Ejemplo de uso :
 
-datos <- Foodpricev2::IncomeCol(Mes=1, Año=2022, Ciudad="Cali")
+datos <- Foodpricev2::IncomeCol(Month=1, Year=2022, City="Cali")
 head(datos_ingresos)
 
 }
