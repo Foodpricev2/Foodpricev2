@@ -52,8 +52,7 @@ Afford <- function(Hexpense, Model_CoCA = NULL, Model_CoNA = NULL, Model_CoRD = 
   # Validar los parámetros de entrada
   validar_parametros(Hexpense, Model_CoCA, Model_CoNA, Model_CoRD)
 
-  # Función para calcular los resultados
-  calculate_outcome <- function(dataset, model, deciles_grupos) {
+  calculate_outcome <- function(dataset, model, deciles_grupos, model_name) {
     z <- as.numeric(levels(as.factor(model$per_capita_year)))
     outcome_list <- list()
 
@@ -73,7 +72,7 @@ Afford <- function(Hexpense, Model_CoCA = NULL, Model_CoNA = NULL, Model_CoRD = 
       gap <- sum(df_z$brecha_rel) / N
       severity <- sum(df_z$brecha_rel_sqr) / N
 
-      df_w <- data.frame(deciles = deciles_grupos[j], rate = rate, gap = gap, severity = severity)
+      df_w <- data.frame(deciles = deciles_grupos[j], rate = rate, gap = gap, severity = severity, model = model_name)
 
       outcome_list[[j]] <- df_w
     }
@@ -82,6 +81,7 @@ Afford <- function(Hexpense, Model_CoCA = NULL, Model_CoNA = NULL, Model_CoRD = 
     return(outcome_list)
   }
 
+
   # Definir los grupos de deciles
   deciles_grupos <- c("Decil 1", "Decil 2", "Decil 3", "Decil 4", "Decil 5", "Decil 6", "Decil 7", "Decil 8", "Decil 9", "Decil 10")
 
@@ -89,35 +89,27 @@ Afford <- function(Hexpense, Model_CoCA = NULL, Model_CoNA = NULL, Model_CoRD = 
   outcome_1_list <- list()
   outcome_2_list <- list()
   outcome_3_list <- list()
-
+  suppressWarnings({
   # Calcular resultados para los modelos no NULL
   if (!is.null(Model_CoCA)) {
     cat("Ejecutando cálculo para Model_CoCA.\n")
-    outcome_1_list <- calculate_outcome(Hexpense, Model_CoCA, deciles_grupos)
+    outcome_1_list <- calculate_outcome(Hexpense, Model_CoCA, deciles_grupos, "CoCA")
   }
 
   if (!is.null(Model_CoNA)) {
     cat("Ejecutando cálculo para Model_CoNA.\n")
-    outcome_2_list <- calculate_outcome(Hexpense, Model_CoNA, deciles_grupos)
+    outcome_2_list <- calculate_outcome(Hexpense, Model_CoNA, deciles_grupos, "CoNA")
   }
 
   if (!is.null(Model_CoRD)) {
     cat("Ejecutando cálculo para Model_CoRD.\n")
-    outcome_3_list <- calculate_outcome(Hexpense, Model_CoRD, deciles_grupos)
+    outcome_3_list <- calculate_outcome(Hexpense, Model_CoRD, deciles_grupos, "CoRD")
   }
 
   # Combinar resultados para cada escenario
   poverty_outcome <- do.call(rbind, c(outcome_1_list, outcome_2_list, outcome_3_list))
 
-  if (!is.null(Model_CoCA)) {
-    poverty_outcome <- poverty_outcome %>% mutate(model = ifelse(is.null(Model_CoCA), NA, "CoCA"))
-  }
-  if (!is.null(Model_CoNA)) {
-    poverty_outcome <- poverty_outcome %>% mutate(model = ifelse(is.null(Model_CoNA), NA, "CoNA"))
-  }
-  if (!is.null(Model_CoRD)) {
-    poverty_outcome <- poverty_outcome %>% mutate(model = ifelse(is.null(Model_CoRD), NA, "CoRD"))
-  }
+
 
   #--------------------------------------------------#
   # Razones costo mínimo e ingreso en alimentación   #
@@ -189,16 +181,15 @@ Afford <- function(Hexpense, Model_CoCA = NULL, Model_CoNA = NULL, Model_CoRD = 
   names(mean_income_food) <- c("decile_groups", "food_per_capita_avg", "threshold_1", "threshold_2", "threshold_3", "ratio_1", "ratio_2", "ratio_3")
 
   # Guardando las salidas como lista
+  rownames(poverty_outcome)=NULL
   Resultados <- list(poverty_outcome, mean_income_food)
   names(Resultados) <- c("Poverty_outcome", "Mean_income_food")
 
   # Retorno
   Sys.sleep(1); cat("Finalizado ✓ \n")
+  })
 
   return(invisible(Resultados))
 }
-
-
-
 
 
